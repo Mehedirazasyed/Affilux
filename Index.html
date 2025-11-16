@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AFFILUXA — Telecom Training</title>
+  <meta name="description" content="AFFILUXA — Hands-on telecom training: optical fibre splicing, OTDR testing, industry-ready certificates." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:#0f1116;
+      --muted:#98a3ad;
+      --accent1:#ff7a18;
+      --accent2:#ff9f43;
+      --glass: rgba(255,255,255,0.04);
+      --glass-strong: rgba(255,255,255,0.06);
+      --radius:16px;
+      --maxw:1100px;
+    }
+    /* base reset */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: radial-gradient(800px 320px at 5% 10%, rgba(255,122,24,0.04), transparent 6%),
+                  radial-gradient(700px 260px at 95% 85%, rgba(255,159,67,0.03), transparent 6%),
+                  var(--bg);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.35;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:16px}
+
+    /* NAV */
+    header.appbar{
+      position:sticky;top:12px;z-index:60;padding-inline:4px;
+      pointer-events:auto;
+    }
+    .nav-inner{
+      display:flex;align-items:center;gap:12px;justify-content:space-between;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;padding:10px 14px;border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px) saturate(120%);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    }
+    .brand{display:flex;gap:10px;align-items:center}
+    .mark{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));box-shadow:0 8px 30px rgba(255,122,24,0.12)
+    }
+    .brand h1{font-size:16px;margin:0;font-weight:700}
+    .brand p{margin:0;font-size:12px;color:var(--muted);margin-top:-2px}
+
+    nav.desktop{display:flex;gap:18px;align-items:center}
+    nav.desktop a{color:rgba(230,238,246,0.85);text-decoration:none;font-weight:600;font-size:14px;padding:8px;border-radius:10px}
+    nav.desktop a:hover{color:white;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+
+    .cta-apply{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;font-weight:700;text-decoration:none;box-shadow:0 8px 30px rgba(255,122,24,0.12)}
+    .cta-ghost{padding:8px 12px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);text-decoration:none;font-weight:600}
+
+    /* Mobile menu button */
+    .menu-btn{display:none;background:transparent;border:none;color:inherit;font-size:22px;padding:8px;border-radius:10px}
+    .menu-btn:focus{outline:2px solid rgba(255,122,24,0.16);outline-offset:3px}
+
+    /* HERO */
+    .hero{padding:44px 0 28px}
+    .hero-grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:center}
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:18px;border:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(8px);box-shadow: 0 20px 50px rgba(0,0,0,0.6)}
+    .hero h2{font-size:28px;line-height:1.02;margin:0 0 8px;font-weight:800}
+    .hero p{color:var(--muted);margin:0 0 18px;font-size:15px;max-width:56ch}
+
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
+    .btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;box-shadow:0 10px 32px rgba(255,122,24,0.12)}
+    .btn-outline{background:transparent;border:1px solid rgba(255,159,67,0.12);color:var(--accent2)}
+
+    /* decorative floating blobs */
+    .float-wrap{position:relative;min-height:220px}
+    .blob{position:absolute;border-radius:999px;filter:blur(14px);opacity:0.12}
+    .blob.a{width:300px;height:200px;left:-50px;top:-30px;background:linear-gradient(90deg,var(--accent1),var(--accent2))}
+    .blob.b{width:220px;height:160px;right:-40px;bottom:-30px;background:linear-gradient(90deg,var(--accent2),var(--accent1));opacity:0.08}
+
+    /* FEATURES / CARDS */
+    .features{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    .feature{padding:16px;border-radius:14px;background:var(--card);border:1px solid rgba(255,255,255,0.02);display:flex;gap:12px;align-items:flex-start}
+    .feat-ico{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071018;font-weight:800}
+
+    /* COURSE SECTION */
+    .course{display:grid;grid-template-columns:1fr;gap:14px;margin-top:20px}
+    .syllabus{background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.02)}
+
+    /* FOOTER */
+    footer.sitefoot{margin-top:36px;padding:24px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.02);color:var(--muted);text-align:center}
+
+    /* reveal animation */
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* small screens */
+    @media (max-width:900px){
+      .nav-inner{padding:10px}
+      nav.desktop{display:none}
+      .menu-btn{display:inline-block}
+      .hero h2{font-size:24px}
+      .hero p{font-size:14px}
+      .float-wrap{min-height:170px}
+    }
+    /* medium and up */
+    @media (min-width:901px){
+      .hero-grid{grid-template-columns:1fr 420px;align-items:center}
+      .features{grid-template-columns:1fr 1fr;gap:18px}
+      .course{grid-template-columns:1fr 360px}
+      #mobileMenu{display:none!important}
+    }
+
+    /* accessibility: prefer reduced motion */
+    @media (prefers-reduced-motion:reduce){
+      .reveal, .blob, .hero h2, .hero p { transition: none !important; animation: none !important; transform:none !important; opacity:1 !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="appbar">
+    <div class="container nav-inner" role="navigation" aria-label="Main navigation">
+      <div class="brand">
+        <div class="mark" aria-hidden>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M3 12C3 7.03 7.03 3 12 3s9 4.03 9 9-4.03 9-9 9S3 16.97 3 12z" fill="white" opacity="0.06"/>
+            <path d="M8.2 12.6c.5-1.8 2.2-3.1 4.1-3.1 1.9 0 3.6 1.3 4.1 3.1H8.2z" fill="white"/>
+          </svg>
+        </div>
+        <div>
+          <h1 style="margin:0;font-size:15px">AFFILUXA</h1>
+          <p style="margin:0;font-size:11px;color:var(--muted)">Telecom Training</p>
+        </div>
+      </div>
+
+      <nav class="desktop" aria-label="Desktop">
+        <a href="#about">About</a>
+        <a href="#course">Course</a>
+        <a href="#contact">Contact</a>
+        <a href="verify.html">Verify</a>
+      </nav>
+
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="cta-apply" href="admission.html">Apply Now</a>
+        <button class="cta-ghost menu-btn" id="menuToggle" aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+
+    <!-- mobile menu (off-canvas style but simple show/hide) -->
+    <div id="mobileMenu" style="display:none;padding:12px;margin-top:12px;">
+      <div class="container" style="display:flex;flex-direction:column;gap:8px">
+        <a href="#about" style="padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);text-decoration:none;color:inherit">About</a>
+        <a href="#course" style="padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);text-decoration:none;color:inherit">Course</a>
+        <a href="#contact" style="padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);text-decoration:none;color:inherit">Contact</a>
+        <a href="verify.html" style="padding:10px;border-radius:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;text-decoration:none;font-weight:700">Verify</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:22px;">
+
+    <!-- HERO -->
+    <section class="hero reveal" id="home" aria-labelledby="hero-title" style="margin-top:6px">
+      <div class="float-wrap" aria-hidden>
+        <div class="blob a" style="transform:translateZ(0)"></div>
+        <div class="blob b" style="transform:translateZ(0)"></div>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <h2 id="hero-title">Master <span style="background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;color:transparent">Optical Fibre</span> Technology — Industry Ready</h2>
+            <p>World-class, hands-on training in fusion splicing, OTDR testing and on-site installations. Fast, practical, and employer-focused.</p>
+
+            <div class="hero-actions" style="margin-top:6px">
+              <a class="btn btn-primary" href="admission.html">Get Certified →</a>
+              <a class="btn btn-outline" href="verify.html" style="color:var(--accent2)">Verify Certificate</a>
+            </div>
+          </div>
+
+          <!-- small stats (mobile friendly) -->
+          <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+            <div class="glass" style="padding:10px;border-radius:12px;min-width:110px"><div style="font-size:12px;color:var(--muted)">Duration</div><div style="font-weight:700">2–6 weeks</div></div>
+            <div class="glass" style="padding:10px;border-radius:12px;min-width:110px"><div style="font-size:12px;color:var(--muted)">Hands-on</div><div style="font-weight:700">100% practical</div></div>
+            <div class="glass" style="padding:10px;border-radius:12px;min-width:110px"><div style="font-size:12px;color:var(--muted)">Placement</div><div style="font-weight:700">Industry partners</div></div>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-hidden="false">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:13px;color:var(--muted)">Featured Course</div>
+            <div style="font-weight:800;font-size:18px">Optical Fibre Splicer — Professional</div>
+            <div style="color:var(--muted);font-size:13px">Fusion splicing, OTDR, closures and field commissioning labs.</div>
+
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <div style="padding:8px;border-radius:12px;background:rgba(255,122,24,0.08);color:var(--accent1);font-weight:700">Live Labs</div>
+              <div style="padding:8px;border-radius:12px;background:rgba(255,159,67,0.06);color:var(--accent2);font-weight:600">Certificate</div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <a class="btn btn-primary" href="admission.html" style="padding:8px 12px;font-size:14px">Enroll</a>
+              <a href="#course" style="align-self:center;color:var(--muted);font-weight:600;text-decoration:none">See syllabus →</a>
+            </div>
+
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">Tools: Fusion Splicer, OTDR</div>
+            <div style="font-size:12px;color:var(--muted)">Career: Field Tech, Installer</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="about" class="reveal" style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <h3 style="margin:0">Why AFFILUXA?</h3>
+        <p style="margin:0;color:var(--muted);font-size:13px">Futuristic training, industry-vetted curriculum, and real-world labs.</p>
+      </div>
+
+      <div class="features" style="margin-top:12px">
+        <div class="feature">
+          <div class="feat-ico">🔧</div>
+          <div>
+            <div style="font-weight:700">Hands-on</div>
+            <div style="color:var(--muted);font-size:13px">Real splicing, OTDR & field tool experience.</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feat-ico">🏅</div>
+          <div>
+            <div style="font-weight:700">Certified</div>
+            <div style="color:var(--muted);font-size:13px">Industry-recognized certificates for employers.</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feat-ico">🚀</div>
+          <div>
+            <div style="font-weight:700">Career-led</div>
+            <div style="color:var(--muted);font-size:13px">Placement guidance & hiring partners.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COURSE -->
+    <section id="course" class="reveal" style="margin-top:18px">
+      <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1">
+          <h4 style="margin:0 0 8px 0">Course Outline</h4>
+          <div class="syllabus">
+            <ul style="margin:0;padding-left:18px">
+              <li style="margin:8px 0">Fusion splicing fundamentals & calibration</li>
+              <li style="margin:8px 0">OTDR use & signature analysis</li>
+              <li style="margin:8px 0">Cable management, closures & testing</li>
+              <li style="margin:8px 0">Safety, standards and best practices</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="width:320px;min-width:220px">
+          <div class="glass" style="padding:14px;border-radius:12px">
+            <div style="font-size:12px;color:var(--muted)">Course type</div>
+            <div style="font-weight:700">Short-term intensive</div>
+            <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+            <div style="font-size:12px;color:var(--muted)">Who it's for</div>
+            <div style="font-weight:700">Field technicians & new entrants</div>
+            <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+            <div style="font-size:12px;color:var(--muted)">Prerequisites</div>
+            <div style="font-weight:700">Basic electrical/telecom familiarity</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="reveal" style="margin-top:20px;margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:1fr;gap:12px">
+        <div style="max-width:640px">
+          <h4 style="margin:0 0 8px 0">Get in touch</h4>
+          <p style="margin:0;color:var(--muted)">Questions about admissions or the course? We respond within one business day.</p>
+
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <div class="glass" style="padding:12px;border-radius:12px;min-width:160px">
+              <div style="font-size:12px;color:var(--muted)">Phone</div>
+              <a href="tel:7803871138" style="color:inherit;font-weight:700;text-decoration:none">7803871138</a>
+            </div>
+            <div class="glass" style="padding:12px;border-radius:12px;min-width:160px">
+              <div style="font-size:12px;color:var(--muted)">Email</div>
+              <a href="mailto:affiluxa@gmail.com" style="color:inherit;font-weight:700;text-decoration:none">affiluxa@gmail.com</a>
+            </div>
+            <div class="glass" style="padding:12px;border-radius:12px;min-width:160px">
+              <div style="font-size:12px;color:var(--muted)">Location</div>
+              <div style="font-weight:700">Muzaffarpur, Bihar, India</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- contact form (progressive enhancement) -->
+        <form id="contactForm" style="display:flex;flex-direction:column;gap:8px;max-width:420px">
+          <input name="name" type="text" placeholder="Full name" required style="padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit">
+          <input name="email" type="email" placeholder="Email" required style="padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit">
+          <textarea name="message" rows="4" placeholder="Message" required style="padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit"></textarea>
+          <div style="display:flex;gap:8px">
+            <button type="submit" class="btn btn-primary" style="flex:1">Send</button>
+            <button type="reset" class="btn btn-outline" style="flex:1">Reset</button>
+          </div>
+          <div id="contactNotice" style="font-size:13px;color:var(--muted)"></div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="sitefoot" style="margin-top:26px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div style="font-size:13px">© <span id="year"></span> AFFILUXA</div>
+        <div style="display:flex;gap:10px">
+          <a href="#about" style="color:var(--muted);text-decoration:none">About</a>
+          <a href="#course" style="color:var(--muted);text-decoration:none">Course</a>
+          <a href="#contact" style="color:var(--muted);text-decoration:none">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Floating quick-CTA (mobile friendly) -->
+  <a href="admission.html" aria-hidden="false" style="position:fixed;right:16px;bottom:18px;background:linear-gradient(90deg,var(--accent1),var(--accent2));padding:12px 14px;border-radius:999px;color:#071018;font-weight:800;box-shadow:0 12px 34px rgba(255,122,24,0.12);z-index:70;text-decoration:none">Apply</a>
+
+  <script>
+    // set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // mobile menu toggle (aria-friendly)
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuToggle?.addEventListener('click', () => {
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!expanded));
+      // toggle
+      if (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') {
+        mobileMenu.style.display = 'block';
+        mobileMenu.animate([{opacity:0, transform:'translateY(-6px)'},{opacity:1, transform:'none'}], {duration:260, easing:'cubic-bezier(.2,.9,.2,1)'});
+      } else {
+        const anim = mobileMenu.animate([{opacity:1, transform:'none'},{opacity:0, transform:'translateY(-6px)'}], {duration:180, easing:'cubic-bezier(.2,.9,.2,1)'});
+        anim.onfinish = ()=> mobileMenu.style.display = 'none';
+      }
+    });
+
+    // reveal on scroll using IntersectionObserver
+    (function(){
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+        return;
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            // we can unobserve to avoid repeat animations
+            io.unobserve(e.target);
+          }
+        });
+      }, {root:null,rootMargin:'0px',threshold:0.14});
+      document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    })();
+
+    // contact form demo handler (no backend) - saves to localStorage as demo
+    (function(){
+      const form = document.getElementById('contactForm');
+      const notice = document.getElementById('contactNotice');
+      form?.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const data = {
+          name: form.name.value.trim(),
+          email: form.email.value.trim(),
+          message: form.message.value.trim(),
+          created: new Date().toISOString()
+        };
+        // append to demo storage
+        const arr = JSON.parse(localStorage.getItem('affiluxa_contacts')||'[]');
+        arr.push(data);
+        localStorage.setItem('affiluxa_contacts', JSON.stringify(arr));
+        notice.textContent = 'Thanks — message saved locally (demo).';
+        form.reset();
+        setTimeout(()=> notice.textContent = '', 4500);
+      });
+    })();
+
+    // smooth anchor links for internal navigation
+    (function(){
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          const href = a.getAttribute('href');
+          if (href.length === 1) return; // '#'
+          const dest = document.querySelector(href);
+          if (dest) {
+            e.preventDefault();
+            dest.scrollIntoView({behavior:'smooth', block:'start'});
+            // close mobile menu if open
+            if (mobileMenu.style.display === 'block') {
+              const anim = mobileMenu.animate([{opacity:1},{opacity:0}], {duration:180});
+              anim.onfinish = ()=> mobileMenu.style.display = 'none';
+            }
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Verify Admission — AFFILUXA</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:#0f1116;
+      --muted:#98a3ad;
+      --accent1:#ff7a18;
+      --accent2:#ff9f43;
+      --radius:16px;
+    }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:#e6eef6;
+      font-family:Inter,system-ui;
+      padding:24px;
+    }
+    .container{
+      max-width:520px;
+      margin:auto;
+      padding:16px;
+    }
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+      font-size:26px;
+      font-weight:800;
+    }
+    .card{
+      background:var(--card);
+      padding:20px;
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.05);
+      box-shadow:0 20px 40px rgba(0,0,0,0.45);
+    }
+    input{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.08);
+      color:white;
+      margin-top:8px;
+      margin-bottom:14px;
+      font-size:15px;
+    }
+    button{
+      width:100%;
+      padding:12px;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      border:none;
+      border-radius:10px;
+      font-weight:800;
+      color:#071018;
+      cursor:pointer;
+      font-size:15px;
+      box-shadow:0 12px 30px rgba(255,122,24,0.16);
+    }
+    .result{
+      margin-top:20px;
+      padding:16px;
+      border-radius:10px;
+      font-size:15px;
+      display:none;
+    }
+    .valid{
+      background:rgba(43,255,132,0.1);
+      border:1px solid rgba(43,255,132,0.3);
+      color:#42ff9c;
+    }
+    .invalid{
+      background:rgba(255,77,77,0.1);
+      border:1px solid rgba(255,77,77,0.3);
+      color:#ff6b6b;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Verify Admission</h1>
+
+    <div class="card">
+      <label>Enter Phone or Email</label>
+      <input id="inputValue" type="text" placeholder="Phone (10 digits) or Email" />
+      <button onclick="verifyAdmission()">Verify</button>
+
+      <div id="resultBox" class="result"></div>
+    </div>
+  </div>
+
+<script>
+  // SUPABASE CONNECTION
+  const supabase = window.supabase.createClient(
+    "https://aidkeanygwsrxfwhsvac.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZGtlYW55Z3dzcnhmd2hzdmFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzMDQwNjMsImV4cCI6MjA3ODg4MDA2M30.9B9iQAZ-rBkM0RO4RePRFiG2jI7beLyB-PLXE9gmn9k"
+  );
+
+  async function verifyAdmission(){
+    const value = document.getElementById("inputValue").value.trim();
+    const box = document.getElementById("resultBox");
+
+    box.style.display = "none";
+
+    if(!value){
+      showError("Please enter phone or email.");
+      return;
+    }
+
+    // QUERY applications table
+    let query = supabase.from("applications").select("*").limit(1);
+
+    if(value.includes("@")){
+      query = query.eq("email", value);
+    } else {
+      query = query.eq("phone", value);
+    }
+
+    const { data, error } = await query;
+
+    if(error || !data || data.length === 0){
+      showError("No admission found for the given details.");
+      return;
+    }
+
+    const app = data[0];
+
+    // SHOW RESULT
+    box.innerHTML = `
+      <strong>✅ Admission Found</strong><br><br>
+      <b>Name:</b> ${app.name}<br>
+      <b>Father:</b> ${app.father}<br>
+      <b>Mother:</b> ${app.mother}<br>
+      <b>Course:</b> ${app.course}<br>
+      <b>Phone:</b> ${app.phone}<br>
+      <b>Email:</b> ${app.email}<br>
+      <b>DOB:</b> ${app.dob}<br>
+      <b>Submitted:</b> ${app.submitted_at}
+    `;
+    box.className = "result valid";
+    box.style.display = "block";
+  }
+
+  function showError(msg){
+    const box = document.getElementById("resultBox");
+    box.textContent = msg;
+    box.className = "result invalid";
+    box.style.display = "block";
+  }
+</script>
+
+</body>
+</html>

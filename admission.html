@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admission — AFFILUXA</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:#0f1116;
+      --muted:#98a3ad;
+      --accent1:#ff7a18;
+      --accent2:#ff9f43;
+      --radius:16px;
+    }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:#e6eef6;
+      font-family:Inter,system-ui;
+      padding:24px;
+    }
+    .container{
+      max-width:650px;
+      margin:auto;
+      padding:16px;
+    }
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+      font-size:28px;
+      font-weight:800;
+    }
+    .card{
+      background:var(--card);
+      padding:22px;
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 20px 40px rgba(0,0,0,0.45);
+    }
+    .row{
+      display:flex;
+      gap:12px;
+    }
+    .row .col{
+      width:100%;
+    }
+    label{
+      font-size:14px;
+      opacity:0.75;
+    }
+    input, textarea, select{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.07);
+      color:white;
+      margin-top:6px;
+      margin-bottom:14px;
+      font-size:15px;
+    }
+    button{
+      width:100%;
+      padding:14px;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      border:none;
+      border-radius:10px;
+      font-weight:800;
+      color:#071018;
+      cursor:pointer;
+      font-size:16px;
+      box-shadow:0 12px 30px rgba(255,122,24,0.16);
+    }
+    .msg{
+      margin-top:16px;
+      padding:14px;
+      border-radius:10px;
+      font-size:15px;
+      display:none;
+    }
+    .success{
+      background:rgba(43,255,132,0.08);
+      border:1px solid rgba(43,255,132,0.2);
+      color:#42ff9c;
+    }
+    .error{
+      background:rgba(255,77,77,0.08);
+      border:1px solid rgba(255,77,77,0.22);
+      color:#ff6b6b;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Student Admission Form</h1>
+
+    <div class="card">
+
+      <div class="row">
+        <div class="col">
+          <label>Student Name</label>
+          <input id="name" type="text" placeholder="Enter full name" />
+        </div>
+        <div class="col">
+          <label>Date of Birth</label>
+          <input id="dob" type="date" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>Father's Name</label>
+          <input id="father" type="text" placeholder="Father's name" />
+        </div>
+        <div class="col">
+          <label>Mother's Name</label>
+          <input id="mother" type="text" placeholder="Mother's name" />
+        </div>
+      </div>
+
+      <label>Address</label>
+      <textarea id="address" rows="2" placeholder="Full address"></textarea>
+
+      <div class="row">
+        <div class="col">
+          <label>Phone Number</label>
+          <input id="phone" type="text" placeholder="10-digit phone" />
+        </div>
+        <div class="col">
+          <label>Email Address</label>
+          <input id="email" type="email" placeholder="example@email.com" />
+        </div>
+      </div>
+
+      <label>Select Course</label>
+      <select id="course">
+        <option value="">-- Choose Course --</option>
+        <option>Optical Fiber Technician</option>
+        <option>FTTH Installation</option>
+        <option>OTDR Testing</option>
+        <option>Splicing & Jointing</option>
+        <option>Telecom Tower Technician</option>
+      </select>
+
+      <button onclick="submitAdmission()">Submit Admission</button>
+
+      <div id="msgBox" class="msg"></div>
+    </div>
+  </div>
+
+<script>
+  // 🔗 SUPABASE CONNECTION
+  const supabase = window.supabase.createClient(
+    "https://aidkeanygwsrxfwhsvac.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpZGtlYW55Z3dzcnhmd2hzdmFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzMDQwNjMsImV4cCI6MjA3ODg4MDA2M30.9B9iQAZ-rBkM0RO4RePRFiG2jI7beLyB-PLXE9gmn9k"
+  );
+
+  async function submitAdmission(){
+    const msgBox = document.getElementById("msgBox");
+    msgBox.style.display = "none";
+
+    // Collect values
+    const student = {
+      name: document.getElementById("name").value.trim(),
+      father: document.getElementById("father").value.trim(),
+      mother: document.getElementById("mother").value.trim(),
+      address: document.getElementById("address").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      course: document.getElementById("course").value,
+      dob: document.getElementById("dob").value
+    };
+
+    // VALIDATION
+    if(!student.name || !student.father || !student.mother){
+      return showError("Please fill student and parent details.");
+    }
+    if(!student.address){
+      return showError("Address is required.");
+    }
+    if(student.phone.length !== 10){
+      return showError("Phone number must be 10 digits.");
+    }
+    if(!student.email.includes("@")){
+      return showError("Invalid email format.");
+    }
+    if(!student.course){
+      return showError("Please select a course.");
+    }
+    if(!student.dob){
+      return showError("Please enter date of birth.");
+    }
+
+    // INSERT INTO SUPABASE
+    const { data, error } = await supabase.from("applications").insert([student]);
+
+    if(error){
+      return showError("Submission failed. Try again.");
+    }
+
+    showSuccess("Admission submitted successfully!");
+  }
+
+  function showSuccess(msg){
+    const box = document.getElementById("msgBox");
+    box.textContent = msg;
+    box.className = "msg success";
+    box.style.display = "block";
+  }
+
+  function showError(msg){
+    const box = document.getElementById("msgBox");
+    box.textContent = msg;
+    box.className = "msg error";
+    box.style.display = "block";
+  }
+</script>
+
+</body>
+</html>
